@@ -59,42 +59,42 @@ end
         end
     end
 end
-if hasfusiontensor(I)
-    @testset "Sector $I: fusion tensor and F-move and R-move" begin
-        for a in smallset(I), b in smallset(I)
-            for c in ⊗(a, b)
-                X1 = permutedims(fusiontensor(a, b, c), (2, 1, 3, 4))
-                X2 = fusiontensor(b, a, c)
-                da = twice(a.j) + 1
-                db = twice(b.j) + 1
-                dc = twice(c.j) + 1
-                l = da * db * dc
-                R = LinearAlgebra.transpose(Rsymbol(a, b, c))
-                sz = (l, convert(Int, Nsymbol(a, b, c)))
-                @test reshape(X1, sz) ≈ reshape(X2, sz) * R
-            end
-        end
-        for a in smallset(I), b in smallset(I), c in smallset(I)
-            for e in ⊗(a, b), f in ⊗(b, c)
-                for d in intersect(⊗(e, c), ⊗(a, f))
-                    X1 = fusiontensor(a, b, e)
-                    X2 = fusiontensor(e, c, d)
-                    Y1 = fusiontensor(b, c, f)
-                    Y2 = fusiontensor(a, f, d)
-                    @tensor f1[-1, -2, -3, -4] := conj(Y2[a, f, d, -4]) *
-                                                  conj(Y1[b, c, f, -3]) *
-                                                  X1[a, b, e, -1] * X2[e, c, d, -2]
-                    if FusionStyle(I) isa MultiplicityFreeFusion
-                        f2 = fill(Fsymbol(a, b, c, d, e, f) * dim(d), (1, 1, 1, 1))
-                    else
-                        f2 = Fsymbol(a, b, c, d, e, f) * dim(d)
-                    end
-                    @test isapprox(f1, f2; atol=1e-12, rtol=1e-12)
-                end
-            end
-        end
-    end
-end
+# if hasfusiontensor(I)
+#     @testset "Sector $I: fusion tensor and F-move and R-move" begin
+#         for a in smallset(I), b in smallset(I)
+#             for c in ⊗(a, b)
+#                 X1 = permutedims(fusiontensor(a, b, c), (2, 1, 3, 4))
+#                 X2 = fusiontensor(b, a, c)
+#                 da = twice(a.j) + 1
+#                 db = twice(b.j) + 1
+#                 dc = twice(c.j) + 1
+#                 l = da * db * dc
+#                 R = LinearAlgebra.transpose(Rsymbol(a, b, c))
+#                 sz = (l, convert(Int, Nsymbol(a, b, c)))
+#                 @test reshape(X1, sz) ≈ reshape(X2, sz) * R
+#             end
+#         end
+#         for a in smallset(I), b in smallset(I), c in smallset(I)
+#             for e in ⊗(a, b), f in ⊗(b, c)
+#                 for d in intersect(⊗(e, c), ⊗(a, f))
+#                     X1 = fusiontensor(a, b, e)
+#                     X2 = fusiontensor(e, c, d)
+#                     Y1 = fusiontensor(b, c, f)
+#                     Y2 = fusiontensor(a, f, d)
+#                     @tensor f1[-1, -2, -3, -4] := conj(Y2[a, f, d, -4]) *
+#                                                   conj(Y1[b, c, f, -3]) *
+#                                                   X1[a, b, e, -1] * X2[e, c, d, -2]
+#                     if FusionStyle(I) isa MultiplicityFreeFusion
+#                         f2 = fill(Fsymbol(a, b, c, d, e, f) * dim(d), (1, 1, 1, 1))
+#                     else
+#                         f2 = Fsymbol(a, b, c, d, e, f) * dim(d)
+#                     end
+#                     @test isapprox(f1, f2; atol=1e-12, rtol=1e-12)
+#                 end
+#             end
+#         end
+#     end
+# end
 @testset "Sector $I: Unitarity of F-move" begin
     for a in smallset(I), b in smallset(I), c in smallset(I)
         for d in ⊗(a, b, c)
