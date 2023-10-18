@@ -145,6 +145,7 @@ function TensorKit.Fsymbol(s1::T, s2::T, s3::T,
 end
 
 function TensorKit.Rsymbol(a::T, b::T, c::T) where {T<:SU2qIrrep}
+    Nsymbol(a, b, c) || return 0.0
     factor = q(T)^((c.j * (c.j + 1) - a.j * (a.j + 1) - b.j * (b.j + 1)) / 2)
     return isodd(convert(Int, a.j + b.j - c.j)) ? -factor : factor
 end
