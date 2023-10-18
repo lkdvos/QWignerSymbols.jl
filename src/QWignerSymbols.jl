@@ -146,7 +146,7 @@ end
 
 function TensorKit.Rsymbol(a::T, b::T, c::T) where {T<:SU2qIrrep}
     factor = q(T)^((c.j * (c.j + 1) - a.j * (a.j + 1) - b.j * (b.j + 1)) / 2)
-    return isodd(a.j + b.j - c.j) ? -factor : factor
+    return isodd(convert(Int, a.j + b.j - c.j)) ? -factor : factor
 end
 
 TensorKit.dim(s::SU2qIrrep) = q_number(twice(s.j)+1, q(typeof(s)))
