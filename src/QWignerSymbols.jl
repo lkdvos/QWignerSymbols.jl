@@ -136,7 +136,7 @@ TensorKit.FusionStyle(::Type{<:SU2qIrrep}) = SimpleFusion()
 TensorKit.BraidingStyle(::Type{<:SU2qIrrep}) = TensorKit.Anyonic()
 Base.isreal(::Type{<:SU2qIrrep{Q}}) where {Q} = isreal(Q)
 function TensorKit.Nsymbol(sa::T, sb::T, sc::T) where {T<:SU2qIrrep}
-    return convert(Int, δ(sa.j, sb.j, sc.j))
+    return δ(sa.j, sb.j, sc.j)
 end
 
 function TensorKit.Fsymbol(s1::T, s2::T, s3::T,
