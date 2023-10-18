@@ -10,7 +10,7 @@ export SU2qIrrep
 
 # Q-numbers
 # ---------
-q_number(n::Integer, q::Number) = Float64(isone(q) ? n : sum(i -> q^((n+1)/2 - i), 1:n))
+q_number(n::Integer, q::Number) = Float64(isone(q) ? n : sum(i -> q^((n + 1) / 2 - i), 1:n))
 q_number(n::Number, q::Number) = q_number(Int(n), q)
 
 q_factorial(n::Integer, q::Number) = prod(n -> q_number(n, q), 1:n; init=1.0)
@@ -29,7 +29,7 @@ function q_wigner3j(j₁, j₂, j₃, m₁, m₂, m₃, q::Number)
     factor = q^(((j₁ + j₂ - j₃) * (j₁ + j₂ + j₃ + 1) + 2 * (j₁ * m₂ - j₂ * m₁)) / 4) *
              Δ(j₁, j₂, j₃, q) *
              *(sqrt.((q_factorial.((j₁ - m₁, j₁ + m₁, j₂ - m₂, j₂ + m₂, j₃ - m₃, j₃ + m₃),
-                                 q)))...)
+                                   q)))...)
     iszero(factor) && return factor
     term = zero(factor)
     for n in
@@ -56,7 +56,7 @@ function q_wigner6j(j₁, j₂, j₃,
     α̂₂ = (j₁, j₆, j₅)
     α̂₃ = (j₂, j₄, j₆)
     α̂₄ = (j₃, j₄, j₅)
-    
+
     # check triangle conditions
     if !(δ(α̂₁...) && δ(α̂₂...) && δ(α̂₃...) && δ(α̂₄...))
         return 0.0
@@ -69,10 +69,10 @@ function q_wigner6j(j₁, j₂, j₃,
     β₁ = convert(UInt, j₁ + j₂ + j₄ + j₅)
     β₂ = convert(UInt, j₁ + j₃ + j₄ + j₆)
     β₃ = convert(UInt, j₂ + j₃ + j₅ + j₆)
-    
+
     (β₁, β₂, β₃, α₁, α₂, α₃, α₄) = reorder6j(β₁, β₂, β₃, α₁, α₂, α₃, α₄)
-    
-    s = Δ(α̂₁..., q) * Δ(α̂₂..., q) * Δ(α̂₃..., q) * Δ(α̂₄..., q) 
+
+    s = Δ(α̂₁..., q) * Δ(α̂₂..., q) * Δ(α̂₃..., q) * Δ(α̂₄..., q)
 
     return s *= compute6jseries(β₁, β₂, β₃, α₁, α₂, α₃, α₄, q)
 end
@@ -92,15 +92,15 @@ function Δ(j₁, j₂, j₃, q)
     end
 
     return *(sqrt.(q_factorial.((j₁ + j₂ - j₃, j₁ - j₂ + j₃, -j₁ + j₂ + j₃), q))...) /
-                sqrt(q_factorial(j₁ + j₂ + j₃ + 1, q))
+           sqrt(q_factorial(j₁ + j₂ + j₃ + 1, q))
 end
 
 function compute6jseries(β₁, β₂, β₃, α₁, α₂, α₃, α₄, q)
     krange = max(α₁, α₂, α₃, α₄):min(β₁, β₂, β₃)
-    
+
     s = 0.0
     for n in max(α₁, α₂, α₃, α₄):min(β₁, β₂, β₃)
-        num = iseven(n) ? q_factorial(n+1, q) : -q_factorial(n+1, q)
+        num = iseven(n) ? q_factorial(n + 1, q) : -q_factorial(n + 1, q)
         den = *(q_factorial.((n - α₁, n - α₂, n - α₃, n - α₄, β₁ - n, β₂ - n, β₃ - n),
                              q)...)
         s += num / den
@@ -135,12 +135,12 @@ end
 TensorKit.FusionStyle(::Type{<:SU2qIrrep}) = SimpleFusion()
 TensorKit.BraidingStyle(::Type{<:SU2qIrrep}) = TensorKit.Anyonic()
 Base.isreal(::Type{<:SU2qIrrep{Q}}) where {Q} = isreal(Q)
-TensorKit.Nsymbol(sa::T, sb::T, sc::T) where {T<:SU2qIrrep} =
-    convert(Int, δ(sa.j, sb.j, sc.j))
+function TensorKit.Nsymbol(sa::T, sb::T, sc::T) where {T<:SU2qIrrep}
+    return convert(Int, δ(sa.j, sb.j, sc.j))
+end
 
 function TensorKit.Fsymbol(s1::T, s2::T, s3::T,
-                            s4::T, s5::T, s6::T) where {T<:SU2qIrrep}
-
+                           s4::T, s5::T, s6::T) where {T<:SU2qIrrep}
     return sqrt(dim(s5) * dim(s6)) * q_racahW(s1.j, s2.j, s4.j, s3.j, s5.j, s6.j, q(T))
 end
 
@@ -149,7 +149,7 @@ function TensorKit.Rsymbol(a::T, b::T, c::T) where {T<:SU2qIrrep}
     return isodd(convert(Int, a.j + b.j - c.j)) ? -factor : factor
 end
 
-TensorKit.dim(s::SU2qIrrep) = q_number(twice(s.j)+1, q(typeof(s)))
+TensorKit.dim(s::SU2qIrrep) = q_number(twice(s.j) + 1, q(typeof(s)))
 
 function TensorKit.fusiontensor(a::T, b::T, c::T) where {T<:SU2qIrrep}
     da = twice(a.j) + 1
@@ -158,10 +158,11 @@ function TensorKit.fusiontensor(a::T, b::T, c::T) where {T<:SU2qIrrep}
     C = Array{Float64}(undef, da, db, dc, 1)
     ja, jb, jc = a.j, b.j, c.j
 
-    for kc = 1:dc, kb = 1:db, ka = 1:da
-        C[ka, kb, kc, 1] = q_clebschgordan(ja, ja+1-ka, jb, jb+1-kb, jc, jc+1-kc, q(T))
+    for kc in 1:dc, kb in 1:db, ka in 1:da
+        C[ka, kb, kc, 1] = q_clebschgordan(ja, ja + 1 - ka, jb, jb + 1 - kb, jc,
+                                           jc + 1 - kc, q(T))
     end
-    
+
     return C
 end
 

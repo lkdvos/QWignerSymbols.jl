@@ -16,7 +16,6 @@ end
 
 hasfusiontensor(I::Type{<:SU2qIrrep}) = true
 
-
 @testset "Sector $I: Basic properties" begin
     s = (randsector(I), randsector(I), randsector(I))
     @test eval(Meta.parse(sprint(show, I))) == I
