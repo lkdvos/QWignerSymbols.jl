@@ -12,8 +12,8 @@ Currently, the package provides the following exported functions that define
 [q-analogs](https://en.wikipedia.org/wiki/Q-analog):
 
 - `q_number(n::Integer, q::Number)`: $\[n\]_q = \frac{1 - q^n}{1 - q}$
-- `q_factorial(n::Integer, q::Number)`: $[n]_q! = \prod_{k=1}^n [k]_q$
-- `q_binomial(n::Integer, k::Integer, q::Number)`: $\binom{n}{k}_q = \frac{[n]_q!}{[k]_q! [n-k]_q!}$
+- `q_factorial(n::Integer, q::Number)`: $\[n\]_q! = \prod \[k\]_q$
+- `q_binomial(n::Integer, k::Integer, q::Number)`: $\binom{n}{k}_q = \frac{\[n\]_q!}{\[k\]_q! \[n-k\]_q!}$
 
 The following functions are exported for the calculation of q-deformed Wigner Symbols, which
 serve a similar function as their
